@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import List
+from typing import Annotated, List
 
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     # Allow scans to reach external data sources (yfinance, GDELT, DuckDuckGo,
     # Pappers). Set ENABLE_NETWORK=false for fully offline / deterministic runs.
     enable_network: bool = Field(default=True, alias="ENABLE_NETWORK")
-    default_universe: List[str] = Field(
+    default_universe: Annotated[List[str], NoDecode] = Field(
         default_factory=lambda: [
             "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN",
             "META", "TSLA", "AMD", "CRM", "SHOP",
@@ -52,10 +52,10 @@ class Settings(BaseSettings):
     )
     min_market_cap: float = 5.0e8  # 500M USD floor
     max_pe: float = 120.0
-    excluded_sectors: List[str] = Field(default_factory=list)
+    excluded_sectors: Annotated[List[str], NoDecode] = Field(default_factory=list)
 
     # --- CORS ---
-    cors_origins: List[str] = Field(default_factory=lambda: ["*"])
+    cors_origins: Annotated[List[str], NoDecode] = Field(default_factory=lambda: ["*"])
 
     # --- Logging ---
     log_level: str = "INFO"
