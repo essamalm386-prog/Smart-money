@@ -1,0 +1,28 @@
+# Déploiement Render.com (offre gratuite) — API Smart Money "données réelles".
+# 1. Poussez ce dépôt sur GitHub.
+# 2. Sur https://render.com → New → Blueprint → sélectionnez ce dépôt.
+# 3. Render lit ce fichier et crée le service. Récupérez l'URL publique de l'API
+#    (ex. https://smart-money-api.onrender.com) et collez-la dans l'application
+#    téléphone : Configuration → « Se connecter au serveur ».
+services:
+  - type: web
+    name: smart-money-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////tmp/smart_money.db
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: USE_LLM
+        value: "false"           # mettez "true" et ajoutez ANTHROPIC_API_KEY pour les analyses rédigées
+      - key: ANTHROPIC_API_KEY
+        sync: false              # à saisir dans le tableau de bord Render (secret)
+      - key: FINNHUB_API_KEY
+        sync: false              # optionnel : clé gratuite finnhub.io si Yahoo est limité
+      - key: PAPPERS_API_KEY
+        sync: false              # optionnel : entreprises françaises (pappers.fr/api)

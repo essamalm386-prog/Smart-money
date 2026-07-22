@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0f14" />
+    <title>Offline — Smart Money</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #0b0f14;
+        color: #e2e8f0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .card {
+        max-width: 360px;
+        padding: 2rem;
+        border: 1px solid #1e293b;
+        border-radius: 16px;
+        background: #111826;
+      }
+      h1 { color: #10b981; font-size: 1.25rem; margin: 0 0 .5rem; }
+      p { color: #94a3b8; font-size: .9rem; line-height: 1.5; }
+      button {
+        margin-top: 1rem;
+        background: #10b981;
+        color: #0b0f14;
+        border: 0;
+        border-radius: 8px;
+        padding: .6rem 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>You're offline</h1>
+      <p>Smart Money can't reach the network right now. Cached pages remain available. Reconnect to load fresh market data.</p>
+      <button onclick="location.reload()">Retry</button>
+    </div>
+  </body>
+</html>

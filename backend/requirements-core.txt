@@ -1,0 +1,11 @@
+# Minimal runtime deps (no CrewAI/anthropic/yfinance) — the app runs fully on
+# these using the deterministic engine + synthetic data fallbacks. Useful for
+# lightweight CI or environments without the heavy AI stack.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.1
+SQLAlchemy==2.0.36
+alembic==1.14.0
+pytest==8.3.4
+httpx==0.28.1

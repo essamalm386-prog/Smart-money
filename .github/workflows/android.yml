@@ -1,0 +1,73 @@
+name: Build Android APK
+
+# Builds an installable Smart Money .apk in the cloud (GitHub's runners CAN reach
+# Google's Android repositories). The finished APK is uploaded as a build
+# artifact AND attached to a GitHub Release you can open on your phone.
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:      # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web bundle (offline PWA)
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: frontend/android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Rename APK
+        working-directory: frontend/android
+        run: |
+          mkdir -p ../../out
+          cp app/build/outputs/apk/debug/app-debug.apk ../../out/smart-money.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-money-apk
+          path: out/smart-money.apk
+
+      - name: Publish APK to a Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: mobile-latest
+          name: Smart Money — Android APK
+          files: out/smart-money.apk
+          body: |
+            Latest Smart Money Android build.
+            Download `smart-money.apk` below on your phone and open it to install.
+            (Enable "Install unknown apps" for your browser when prompted.)

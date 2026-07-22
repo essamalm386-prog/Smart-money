@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Smart Money">
+  <defs>
+    <linearGradient id="line" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#10b981"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <!-- full-bleed safe-zone background for maskable -->
+  <rect width="512" height="512" fill="#0b0f14"/>
+  <polyline points="128,336 192,292 248,316 320,224 392,184"
+    fill="none" stroke="url(#line)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="392" cy="184" r="24" fill="#10b981"/>
+</svg>

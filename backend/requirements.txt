@@ -1,0 +1,22 @@
+# --- Web framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# --- Database ---
+SQLAlchemy==2.0.36
+alembic==1.14.0
+
+# --- AI / agents ---
+crewai==0.86.0
+anthropic==0.42.0
+
+# --- Data / research ---
+yfinance==0.2.51
+ddgs==9.0.0
+requests==2.32.3
+
+# --- Tests ---
+pytest==8.3.4
+httpx==0.28.1
