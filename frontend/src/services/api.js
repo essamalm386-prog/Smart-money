@@ -9,7 +9,10 @@ export const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 /** Shared axios instance for all Smart Money API calls. */
 export const api = axios.create({
   baseURL: API_BASE,
-  timeout: 9000, // fail fast on a bad/unreachable server URL
+  // Free hosts (Render, etc.) cold-start after idling: the first request can
+  // take 30-60s to wake the server. Allow for that so the app doesn't wrongly
+  // report "cannot reach backend" on the very first connection.
+  timeout: 60000,
   headers: { 'Content-Type': 'application/json' },
 });
 
