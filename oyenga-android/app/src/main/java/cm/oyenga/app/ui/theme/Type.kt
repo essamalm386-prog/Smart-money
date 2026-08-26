@@ -1,6 +1,7 @@
 @file:OptIn(
     androidx.compose.material3.ExperimentalMaterial3Api::class,
     androidx.compose.foundation.layout.ExperimentalLayoutApi::class,
+    androidx.compose.ui.text.ExperimentalTextApi::class,
 )
 
 package cm.oyenga.app.ui.theme

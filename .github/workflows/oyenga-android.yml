@@ -40,8 +40,6 @@ jobs:
 
       - name: Préparer Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          build-root-directory: oyenga-android
 
       - name: Tests unitaires
         run: ./gradlew --no-daemon testDebugUnitTest
