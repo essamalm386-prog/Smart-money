@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OYENGA</string>
+    <string name="app_tagline">Chants liturgiques</string>
+    <string name="notification_channel_playback">Lecture en cours</string>
+</resources>

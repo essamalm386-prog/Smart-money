@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fond du splash système : surface claire de la charte (neutre teintée). -->
+    <color name="splash_background">#FFF8F7</color>
+    <color name="brand_seed">#9B221B</color>
+    <!-- Fond de l'icône adaptative : le rouge liturgique de la marque. -->
+    <color name="ic_launcher_background">#9B221B</color>
+</resources>

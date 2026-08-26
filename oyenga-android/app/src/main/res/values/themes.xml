@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Le rendu complet est produit par Compose (OyengaTheme).
+         Ce thème ne sert qu'à l'écran de démarrage système. -->
+    <style name="Theme.Oyenga.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_oyenga</item>
+        <item name="postSplashScreenTheme">@style/Theme.Oyenga</item>
+    </style>
+
+    <style name="Theme.Oyenga" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
+</resources>
