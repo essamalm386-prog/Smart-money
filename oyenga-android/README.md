@@ -24,13 +24,19 @@ cd oyenga-android
 
 L'APK de debug sort dans `app/build/outputs/apk/debug/`.
 
-> **Important — état de vérification.** La couche métier (modèles, algorithme de
-> suggestion, rédaction de l'introduction, lecture AELF, persistance, appel
-> Anthropic) a été compilée et ses 23 tests unitaires passent. La couche Compose
-> n'a **pas** pu être compilée dans l'environnement où ce code a été écrit :
-> les artefacts `androidx` ne s'y téléchargent pas. Attends-toi à devoir corriger
-> quelques signatures Compose au premier `assembleDebug` ; l'architecture, elle,
-> est vérifiée.
+## Récupérer l'APK sans rien installer
+
+Le workflow **OYENGA — APK Android** compile le projet sur les runners GitHub et
+publie l'APK de debug en artefact :
+
+1. [Onglet Actions](https://github.com/essamalm386-prog/Smart-money/actions/workflows/oyenga-android.yml)
+2. Ouvre la dernière exécution verte → section **Artifacts** → `oyenga-debug-apk`
+3. Décompresse le `.zip`, transfère le `.apk` sur le téléphone, autorise
+   l'installation depuis cette source, installe.
+
+C'est un APK de **debug** : il s'installe à côté d'une éventuelle version de
+production (identifiant `cm.oyenga.app.debug`) et n'a pas besoin de signature de
+publication.
 
 ---
 

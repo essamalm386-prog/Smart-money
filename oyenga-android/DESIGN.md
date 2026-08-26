@@ -142,5 +142,5 @@ sécurité, et un test unitaire garde la porte fermée.
 - [x] Icônes décoratives sans description, icônes cliquables décrites
 - [x] Aucune information portée par la seule couleur
 - [x] Cibles tactiles ≥ 48dp (composants Material 3)
-- [ ] Rendu réel vérifié sur appareil — reste à faire, le projet n'a pas pu être
-      compilé là où il a été écrit (voir le README)
+- [x] Le projet compile et les 23 tests unitaires passent (GitHub Actions)
+- [ ] Rendu réel vérifié sur appareil — reste à faire une fois l'APK installé
