@@ -22,6 +22,16 @@ data class Post(
     val text: String = "",
     /** Illustration décorative : `"choir"` ou vide. Dessinée dans l'application, jamais chargée du réseau. */
     val image: String = "",
+    /**
+     * Vidéo de la publication. Vide tant qu'aucune n'est rattachée : le fil affiche
+     * alors une carte de remplacement plutôt qu'un écran noir.
+     */
+    val videoUrl: String = "",
+    /**
+     * Le chant du répertoire associé à la publication — l'équivalent du « son » d'un
+     * réseau social. Le toucher lance la lecture dans le lecteur de l'application.
+     */
+    val songId: String = "",
     val likes: Int = 0,
     val liked: Boolean = false,
     val commentsList: List<Comment> = emptyList(),

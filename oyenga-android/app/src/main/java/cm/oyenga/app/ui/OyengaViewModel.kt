@@ -40,6 +40,7 @@ sealed interface Sheet {
     data object Readings : Sheet
     data object Account : Sheet
     data object Compose : Sheet
+    data object Discover : Sheet
     data object Filters : Sheet
     data object Lyrics : Sheet
     data object Partition : Sheet
@@ -371,7 +372,12 @@ class OyengaViewModel(
 
     fun isSubscribed(communityId: String): Boolean = communityId in db.value.user.subscriptions
 
-    fun publish(communityId: String, text: String) {
+    fun publish(
+        communityId: String,
+        text: String,
+        videoUrl: String = "",
+        songId: String = "",
+    ) {
         if (text.isBlank()) {
             toast("Écris d'abord ton message")
             return
@@ -385,6 +391,8 @@ class OyengaViewModel(
                 timeAgo = "À l'instant",
                 ts = System.currentTimeMillis(),
                 text = text.trim(),
+                videoUrl = videoUrl.trim(),
+                songId = songId,
             )
             db.copy(posts = listOf(post) + db.posts)
         }

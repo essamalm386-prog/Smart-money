@@ -14,6 +14,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -94,15 +95,22 @@ fun OyengaApp(viewModel: OyengaViewModel) {
             }
         },
     ) { padding ->
+        // Le fil communauté est plein écran : le média passe SOUS la barre de
+        // navigation et le mini-lecteur, qui flottent par-dessus. Les surcouches
+        // reçoivent la hauteur à réserver pour ne rien masquer d'important.
+        val immersive = ui.tab == Tab.COMMUNAUTE
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(if (immersive) PaddingValues() else padding),
         ) {
             when (ui.tab) {
                 Tab.ACCUEIL -> HomeScreen(viewModel)
                 Tab.CATALOGUE -> CatalogueScreen(viewModel)
-                Tab.COMMUNAUTE -> CommunityScreen(viewModel)
+                Tab.COMMUNAUTE -> CommunityScreen(
+                    viewModel = viewModel,
+                    bottomInset = padding.calculateBottomPadding(),
+                )
                 Tab.LECTEUR -> HomeScreen(viewModel)
             }
         }

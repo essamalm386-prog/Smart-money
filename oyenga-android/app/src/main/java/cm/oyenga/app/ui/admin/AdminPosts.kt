@@ -45,8 +45,11 @@ import cm.oyenga.app.ui.theme.Space
 @Composable
 fun AdminPosts(viewModel: OyengaViewModel) {
     val db by viewModel.db.collectAsStateWithLifecycle()
+    val songs by viewModel.songs.collectAsStateWithLifecycle()
     var target by remember { mutableStateOf(db.communities.firstOrNull()?.id.orEmpty()) }
     var text by remember { mutableStateOf("") }
+    var videoUrl by remember { mutableStateOf("") }
+    var songId by remember { mutableStateOf("") }
 
     LazyColumn(contentPadding = PaddingValues(horizontal = Space.s6, vertical = Space.s4)) {
         item {
@@ -69,10 +72,27 @@ fun AdminPosts(viewModel: OyengaViewModel) {
                 placeholder = "Répétition, annonce, remerciements…",
             )
 
+            AdminField(
+                "Lien de la vidéo",
+                videoUrl,
+                { videoUrl = it },
+                placeholder = "https://…/repetition.mp4",
+                supporting = "Facultatif. Sans vidéo, le fil affiche une carte de la chorale.",
+            )
+
+            AdminSingleChoice(
+                title = "Chant mis en avant",
+                options = songs.take(40).map { it.id to it.title },
+                selected = songId,
+                onSelect = { songId = if (songId == it) "" else it },
+            )
+
             Button(
                 onClick = {
-                    viewModel.publish(target, text)
+                    viewModel.publish(target, text, videoUrl, songId)
                     text = ""
+                    videoUrl = ""
+                    songId = ""
                 },
                 enabled = text.isNotBlank() && target.isNotBlank(),
                 modifier = Modifier.fillMaxWidth(),
@@ -96,8 +116,12 @@ fun AdminPosts(viewModel: OyengaViewModel) {
                 ListRow(
                     leading = { InitialsAvatar(post.author, post.authorInit, size = 40.dp) },
                     title = post.author,
-                    subtitle = "${db.community(post.communityId)?.name ?: "Communauté"} · " +
-                        "${post.likes} j'aime · ${post.commentsList.size} commentaires",
+                    subtitle = buildString {
+                        append(db.community(post.communityId)?.name ?: "Communauté")
+                        append(" · ").append(post.likes).append(" j'aime")
+                        append(" · ").append(post.commentsList.size).append(" commentaires")
+                        if (post.videoUrl.isNotBlank()) append(" · vidéo")
+                    },
                     trailing = {
                         TextButton(onClick = { viewModel.deletePost(post.id) }) {
                             OyIcon(

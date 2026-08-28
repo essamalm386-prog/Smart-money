@@ -53,6 +53,7 @@ fun OyengaSheets(viewModel: OyengaViewModel) {
                 Sheet.Readings -> ReadingsSheet(viewModel)
                 Sheet.Account -> AccountSheet(viewModel)
                 Sheet.Compose -> ComposeSheet(viewModel)
+                Sheet.Discover -> DiscoverSheet(viewModel)
                 Sheet.Filters -> FiltersSheet(viewModel)
                 Sheet.Lyrics -> LyricsSheet(viewModel)
                 Sheet.Partition -> PartitionSheet(viewModel)

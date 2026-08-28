@@ -168,6 +168,7 @@ object Seed {
             ts = 1,
             text = "Nous chanterons Ton Saint Nom Seigneur Jésus, pour tes merveilles dans nos vies 🙏",
             image = "choir",
+            songId = "ENTREE-001",
             likes = 2,
             commentsList = listOf(
                 Comment("cm1", "Bia", "BY", "Amen ! Hâte d'y être 🙌", "Il y a 2 sem."),
@@ -184,6 +185,7 @@ object Seed {
             ts = 2,
             text = "Nouvelle répétition dimanche à 15h. On travaille « TEBEGE BEBEGE » pour " +
                 "l'entrée de la messe. Venez nombreux !",
+            songId = "ENTREE-001",
             likes = 12,
             commentsList = listOf(
                 Comment("cm4", "Bia", "BY", "Je serai là 👏", "Il y a 2 j."),

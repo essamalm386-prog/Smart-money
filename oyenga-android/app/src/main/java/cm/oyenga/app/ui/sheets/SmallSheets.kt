@@ -41,7 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
-import cm.oyenga.app.data.model.MASS_PARTS
+import cm.oyenga.app.data.model.Community
 import cm.oyenga.app.data.model.TEMPS_LITURGIQUES
 import cm.oyenga.app.data.model.THEMES
 import cm.oyenga.app.ui.Filters
@@ -521,9 +521,13 @@ fun AccountSheet(viewModel: OyengaViewModel) {
 @Composable
 fun ComposeSheet(viewModel: OyengaViewModel) {
     val db by viewModel.db.collectAsStateWithLifecycle()
+    val songs by viewModel.songs.collectAsStateWithLifecycle()
     val mine = db.communities.filter { it.joined }
     var target by remember { mutableStateOf(mine.firstOrNull()?.id ?: db.communities.firstOrNull()?.id.orEmpty()) }
     var text by remember { mutableStateOf("") }
+    var videoUrl by remember { mutableStateOf("") }
+    var songId by remember { mutableStateOf("") }
+    var songQuery by remember { mutableStateOf("") }
 
     SheetHeader(title = "Nouvelle publication", subtitle = "Publiée sous ${db.user.displayName}")
     SheetBody {
@@ -554,15 +558,71 @@ fun ComposeSheet(viewModel: OyengaViewModel) {
             onValueChange = { text = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp),
+                .height(140.dp),
             label = { Text("Ton message") },
             placeholder = { Text("Répétition, remerciements, partage d'un chant…") },
             shape = OyengaShapes.md,
         )
 
+        Spacer(Modifier.height(Space.s3))
+        OutlinedTextField(
+            value = videoUrl,
+            onValueChange = { videoUrl = it },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Lien de la vidéo") },
+            placeholder = { Text("https://…/repetition.mp4") },
+            supportingText = { Text("Facultatif. Sans vidéo, le fil affiche une carte de la chorale.") },
+            singleLine = true,
+            shape = OyengaShapes.md,
+        )
+
+        Spacer(Modifier.height(Space.s4))
+        Kicker("Chant mis en avant")
+        Text(
+            "Il apparaît en bas de la publication ; le toucher lance la lecture.",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(Space.s2))
+        OutlinedTextField(
+            value = songQuery,
+            onValueChange = { songQuery = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Chercher un chant…") },
+            leadingIcon = { OyIcon(Ic.search, null, size = IconSize.inline) },
+            singleLine = true,
+            shape = OyengaShapes.full,
+        )
+        val matches = remember(songs, songQuery) {
+            if (songQuery.isBlank()) emptyList()
+            else songs.filter { it.title.contains(songQuery, ignoreCase = true) }.take(6)
+        }
+        songs.firstOrNull { it.id == songId }?.let { chosen ->
+            ListRow(
+                leading = { SongIcon(chosen.moment, size = 40.dp) },
+                title = chosen.title,
+                subtitle = chosen.subtitle(),
+                onClick = { songId = "" },
+                trailing = {
+                    OyIcon(Ic.close, "Retirer le chant", size = IconSize.inline)
+                },
+            )
+        }
+        matches.forEach { song ->
+            ListRow(
+                leading = { SongIcon(song.moment, size = 40.dp) },
+                title = song.title,
+                subtitle = song.subtitle(),
+                onClick = {
+                    songId = song.id
+                    songQuery = ""
+                },
+            )
+        }
+
         Spacer(Modifier.height(Space.s4))
         Button(
-            onClick = { viewModel.publish(target, text) },
+            onClick = { viewModel.publish(target, text, videoUrl, songId) },
             modifier = Modifier.fillMaxWidth(),
             enabled = text.isNotBlank() && target.isNotBlank(),
         ) {
@@ -572,6 +632,90 @@ fun ComposeSheet(viewModel: OyengaViewModel) {
         }
         Spacer(Modifier.height(Space.s6))
     }
+}
+
+// ------------------------------------------------------------------ découvrir
+
+/**
+ * La recherche de communautés, sortie du fil.
+ *
+ * Le fil est plein écran : y loger un second mode d'affichage l'aurait alourdi.
+ * La découverte devient une feuille, atteignable depuis la loupe du fil.
+ */
+@UnstableApi
+@Composable
+fun DiscoverSheet(viewModel: OyengaViewModel) {
+    val db by viewModel.db.collectAsStateWithLifecycle()
+    var query by remember { mutableStateOf("") }
+    val results = remember(db.communities, query) {
+        db.communities.filter { it.name.contains(query, ignoreCase = true) }
+    }
+
+    SheetHeader(
+        title = "Communautés",
+        subtitle = "${db.user.subscriptions.size} abonnement(s)",
+    )
+    SheetBody {
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Rechercher une communauté…") },
+            leadingIcon = { OyIcon(Ic.search, null, size = IconSize.inline) },
+            singleLine = true,
+            shape = OyengaShapes.full,
+        )
+
+        val mine = results.filter { it.joined }
+        val others = results.filterNot { it.joined }
+
+        if (mine.isNotEmpty()) {
+            Spacer(Modifier.height(Space.s5))
+            Kicker("Mes communautés")
+            Spacer(Modifier.height(Space.s2))
+            mine.forEach { community -> CommunityRow(viewModel, community) }
+        }
+        if (others.isNotEmpty()) {
+            Spacer(Modifier.height(Space.s5))
+            Kicker("Découvrir")
+            Spacer(Modifier.height(Space.s2))
+            others.forEach { community -> CommunityRow(viewModel, community) }
+        }
+        if (results.isEmpty()) {
+            EmptyState(Ic.search, "Aucune communauté trouvée.")
+        }
+        Spacer(Modifier.height(Space.s6))
+    }
+}
+
+@UnstableApi
+@Composable
+private fun CommunityRow(viewModel: OyengaViewModel, community: Community) {
+    val subscribed = viewModel.isSubscribed(community.id)
+    ListRow(
+        leading = {
+            InitialsAvatar(
+                label = community.name,
+                initials = community.name.split(" ").mapNotNull { it.firstOrNull() }.take(2).joinToString(""),
+                size = 44.dp,
+            )
+        },
+        title = community.name,
+        subtitle = "${community.type} · ${community.members} membre" + if (community.members > 1) "s" else "",
+        trailing = {
+            if (subscribed) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    OyIcon(Ic.check, null, size = IconSize.inline, tint = MaterialTheme.colorScheme.primary)
+                    Spacer(Modifier.size(Space.s1))
+                    Text("Abonné", style = MaterialTheme.typography.labelMedium)
+                }
+            } else {
+                OutlinedButton(onClick = { viewModel.joinCommunity(community) }) {
+                    Text(if (community.isPrivate) "Demander" else "Rejoindre")
+                }
+            }
+        },
+    )
 }
 
 // ------------------------------------------------------------------ détail d'une publication

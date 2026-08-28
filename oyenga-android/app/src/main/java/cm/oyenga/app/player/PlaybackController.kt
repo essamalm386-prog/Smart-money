@@ -147,6 +147,14 @@ class PlaybackController(
         }
     }
 
+    /** Met en pause sans oublier le chant : le fil vidéo prend la main sur le son. */
+    fun pause() {
+        if (!_state.value.isPlaying) return
+        _state.value = _state.value.copy(isPlaying = false)
+        simulation?.cancel()
+        controller?.pause()
+    }
+
     fun stop() {
         simulation?.cancel()
         ticker?.cancel()
